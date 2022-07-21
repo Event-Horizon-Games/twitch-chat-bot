@@ -1,4 +1,4 @@
-![GitHub all releases](https://img.shields.io/github/downloads/gravity-codes/stream-twitch-bot/total)
+![GitHub all releases](https://img.shields.io/github/downloads/event-horizon-games/twitch-chat-bot/total)
 
 # Twitch Stream Bot
 
