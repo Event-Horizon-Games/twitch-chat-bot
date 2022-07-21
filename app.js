@@ -159,7 +159,7 @@ async function incrementUserCums(channel, username) {
             queryDB(createQuery);
         }
 
-        tmiClient.say(channel, `borpaSpin @${username} just came all over the chat! They have cum a total of ${currentCums} times.`);
+        client.say(channel, `borpaSpin @${username} just came all over the chat! They have cum a total of ${currentCums} times.`);
     }
     catch (error) {
         console.log(error);
