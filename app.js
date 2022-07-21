@@ -8,6 +8,10 @@ const mysql = require('mysql');
 var sqlError = null;
 // name of table in the database were saving things to
 var sqlTable = 'userinfo';
+// status of commands 
+var commandDisabledList = {};
+//* Commands list here
+var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce'];
 
 // create DB connection
 var db = mysql.createConnection({
@@ -23,7 +27,7 @@ db.connect(function(err) {
     console.log('Connected to database!');
 });
 
-incrementUserCums('gravitybzk', 'bazooka3');
+//incrementUserCums('gravitybzk', 'bazooka3');
 
 // Create the channels to join list
 const channelsString = process.env.TWITCH_CHANNELS;
@@ -65,10 +69,12 @@ client.on('message', (channel, tags, message, self) => {
         return;
     }
 
-    //* Commands list here
-    var commandList = ['usage', 'hey', 'cum', 'announce'];
-
     const sender = tags.username;
+
+    if (isCommandDisabled(command)) {
+        client.say(channel, `@${sender} Command: ${command} is currently disabled.`);
+        return;
+    }
 
     switch (command) {
         //! ANY USER INPUT TOUCHING THE DB NEEDS TO BE CLEANED mysql.escape()
@@ -90,6 +96,69 @@ client.on('message', (channel, tags, message, self) => {
             }
             else {
                 // sent only !usage
+                client.say(channel, `@${sender} Must supply a command. Usage: ${getUsageInfo(command)}`);
+            }
+            break;
+
+        case 'enable':
+            if (restOfMessage) {
+                const splitMessage = restOfMessage.split(' ');
+                if (splitMessage.length > 1) {
+                    // sent something like !enable sdfsdfsd sdfsdsd
+                    client.say(channel, `@${sender} Too many parameters. Usage: ${getUsageInfo(command)}`);
+                }
+                else {
+                    // sent only one parameter good
+                    if(isCommandDisabled(splitMessage[0])) {
+                        if(isValidCommand(splitMessage[0])) {
+                            enableCommand(splitMessage[0]);
+                            client.say(channel, `@${sender} ${splitMessage[0]} has been enabled.`);
+                        }
+                        else {
+                            client.say(channel, `@${sender} ${splitMessage[0]} is not a valid command.`);
+                        }
+                    }
+                    else {
+                        client.say(channel, `@${sender} Command: ${splitMessage[0]} is already enabled.`);
+                    }
+                }
+            }
+            else {
+                // sent only !enable
+                client.say(channel, `@${sender} Must supply a command. Usage: ${getUsageInfo(command)}`);
+            }
+            break;
+
+        case 'disable':
+            if (restOfMessage) {
+                const splitMessage = restOfMessage.split(' ');
+                if (splitMessage.length > 1) {
+                    // sent something like !disable sdfsdfsd sdfsdsd
+                    client.say(channel, `@${sender} Too many parameters. Usage: ${getUsageInfo(command)}`);
+                }
+                else {
+                    // sent only one parameter good
+                    if(!isCommandDisabled(splitMessage[0])) {
+                        if(isValidCommand(splitMessage[0])) {
+                            if(splitMessage[0] === 'commands' || splitMessage[0] === 'enable' || splitMessage[0] === 'disable' || splitMessage[0] === 'usage') {
+                                client.say(channel, `@${sender} Command: ${splitMessage[0]} can not be disabled.`);
+                            }
+                            else {
+                                disableCommand(splitMessage[0]);
+                                client.say(channel, `@${sender} ${splitMessage[0]} has been disabled.`);
+                            }
+                        }
+                        else {
+                            client.say(channel, `@${sender} ${splitMessage[0]} is not a valid command.`);
+                        }
+                    }
+                    else {
+                        client.say(channel, `@${sender} Command: ${splitMessage[0]} is already disabled.`);
+                    }
+                }
+            }
+            else {
+                // sent only !enable
                 client.say(channel, `@${sender} Must supply a command. Usage: ${getUsageInfo(command)}`);
             }
             break;
@@ -183,6 +252,52 @@ function queryDB(query) {
             return resolve(result);
         });
     });
+}
+
+/** 
+ *  Disables a given command
+ *  @param      {string}    command     The command to disable
+ */ 
+function disableCommand(command) {
+    commandDisabledList[command] = true;
+}
+
+/** 
+ *  Enables a given command
+ *  @param      {string}    command     The command to disable
+ */ 
+function enableCommand(command) {
+    commandDisabledList[command] = false;
+}
+
+/**
+ *  Returns whether or not a commmand is currently disabled
+ *  @param      {string}    command     The command to get status for
+ *  @returns    {boolean}               True - command is currently DISABLED | False - command is currently ENABLED
+ */ 
+function isCommandDisabled(command) {
+    updateCommandDisabledList();
+    return commandDisabledList[command];
+}
+
+/** 
+ *  Updates the disabled list to have all commands in it, with them defaulting to enabled.
+ */ 
+function updateCommandDisabledList() {
+    commandList.forEach((command) => {
+        if(!(command in commandDisabledList)) {
+            commandDisabledList[command] = false;
+        }
+    });
+}
+
+/** 
+ *  Checks if a command is a valid command for the bot
+ *  @param      {string}    command     The commmand to check
+ *  @returns    {boolean}               True - the command is valid | False - the command is not valid
+ */ 
+function isValidCommand(command) {
+    return commandList.includes(command);
 }
 
 /**
