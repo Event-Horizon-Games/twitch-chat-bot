@@ -23,7 +23,7 @@ db.connect(function(err) {
     console.log('Connected to database!');
 });
 
-
+incrementUserCums('gravitybzk', 'bazooka3');
 
 // Create the channels to join list
 const channelsString = process.env.TWITCH_CHANNELS;
@@ -46,7 +46,7 @@ var client = new tmi.Client({
 });
 
 client.connect().catch(console.error);
-incrementUserCums(client, 'gravitybzk', 'bazooka3');
+
 client.on('message', (channel, tags, message, self) => {
     // Ignores chat messages from the bot
     if (self) return;
@@ -139,7 +139,7 @@ client.on('message', (channel, tags, message, self) => {
  *  @param  {string}    username   The username to increment
  *  @return {number}               The current number of cums for the user | -1 if an error occurs
  */ 
-async function incrementUserCums(channel, username) {
+async function incrementUserCums(channel, username, printToChat) {
     try {
         const query = `SELECT * FROM ${sqlTable} WHERE username=${mysql.escape(username)}`;
         const userInfo = await queryDB(query);
