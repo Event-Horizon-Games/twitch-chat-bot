@@ -64,7 +64,7 @@ switch (command) {
 ```javascript
 switch (command) {
     case 'yournewcommandhere':
-      return "What your new command does. Usage: !yournewcommand <parameter1> <parameter2>. Example: \"!yournewcommand parameter1 parameter2\"" 
+      return "What your new command does. Usage: !yournewcommand <parameter1> <parameter2>. Example: \"!yournewcommand parameter1 parameter2\"";
 }
 ```
 
