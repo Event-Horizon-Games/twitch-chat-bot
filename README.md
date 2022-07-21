@@ -1,4 +1,4 @@
-![GitHub all releases](https://img.shields.io/github/downloads/Event-Horizon-Games/twitch-chat-bot/total)
+![GitHub all releases](https://img.shields.io/github/downloads/Event-Horizon-Games/twitch-chat-bot/total)![GitHub](https://img.shields.io/github/license/event-horizon-games/twitch-chat-bot)
 
 # Twitch Stream Bot
 
