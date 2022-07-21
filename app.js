@@ -67,7 +67,6 @@ client.on('message', (channel, tags, message, self) => {
 
     //* Commands list here
     var commandList = ['usage', 'hey', 'cum', 'announce'];
-    console.log(channel);
 
     const sender = tags.username;
 
@@ -168,8 +167,8 @@ async function incrementUserCums(channel, username, printToChat) {
 
 /**
  *  Executes a query and returns the result
- *  @param   {string}    query   the query to execute on the database
- *  @returns {Promise}           promise containing the execution
+ *  @param      {string}    query   the query to execute on the database
+ *  @returns    {Promise}           promise containing the execution
  */ 
 function queryDB(query) {
     return new Promise((resolve, reject) => {
@@ -186,6 +185,11 @@ function queryDB(query) {
     });
 }
 
+/**
+ *  Returns a string containing the usage info on a command
+ *  @param      {string}    command     the string form of the command
+ *  @returns                            The string usage sentence of the given commmand.
+ */ 
 function getUsageInfo(command) {
     switch (command) {
         case 'commands':
