@@ -27,8 +27,6 @@ db.connect(function(err) {
     console.log('Connected to database!');
 });
 
-//incrementUserCums('gravitybzk', 'bazooka3');
-
 // Create the channels to join list
 const channelsString = process.env.TWITCH_CHANNELS;
 const channelsArray = channelsString.replace(' ', '').split(',');
@@ -175,19 +173,20 @@ client.on('message', (channel, tags, message, self) => {
                     client.say(channel, `@${sender} We're sorry, but you can't cum on more than one person. Usage of ${command}: ${getUsageInfo(command)}`);
                 }
                 else {
-
+                    // Direct cum onto someone
                 }
             }
             else {
                 // nothing but command. just increment this user's cums
-                const userCums = incrementUserCums(sender);
-                if (userCums !== -1) {
-                    // succesfully cummed on chat
-                    client.say(channel, `borpaSpin @${sender} just cummed on chat! borpaSpin They have cummed a total of ${userCums} times. borpaSpin`);
-                }
-                else {
-                    client.say(channel, `Sorry @${sender}, we couldn't handle your cum right now. There may be a problem with the database.`);
-                }
+                incrementUserCums(sender, channel).then((result) => {
+                    if (result !== -1) {
+                        // succesfully cummed on chat
+                        client.say(channel, `borpaSpin @${sender} just cummed on chat! borpaSpin They have cummed a total of ${result} times. borpaSpin`);
+                    }
+                    else {
+                        client.say(channel, `Sorry @${sender}, we couldn't handle your cum right now. There may be a problem with the database.`);
+                    }
+                });
             }
             break;
 
@@ -207,7 +206,7 @@ client.on('message', (channel, tags, message, self) => {
  *  @param  {string}    username   The username to increment
  *  @return {number}               The current number of cums for the user | -1 if an error occurs
  */ 
-async function incrementUserCums(channel, username, printToChat) {
+async function incrementUserCums(username, channel) {
     try {
         const query = `SELECT * FROM ${sqlTable} WHERE username=${mysql.escape(username)}`;
         const userInfo = await queryDB(query);
@@ -218,19 +217,21 @@ async function incrementUserCums(channel, username, printToChat) {
             const userCums = userInfo[0].cums;
             currentCums = userCums + 1
             const updateQuery = `UPDATE ${sqlTable} SET cums=${currentCums} WHERE username=${mysql.escape(username)}`;
-            queryDB(updateQuery);
+            await queryDB(updateQuery);
         }
         else {
             // The user is not in the database, create with one cums
             currentCums = 1
             const createQuery = `INSERT INTO ${sqlTable} (username, cums) VALUES (${mysql.escape(username)}, ${currentCums})`;
-            queryDB(createQuery);
+            await queryDB(createQuery);
         }
 
-        client.say(channel, `borpaSpin @${username} just came all over the chat! They have cum a total of ${currentCums} times.`);
+        //client.say(channel, `borpaSpin @${username} just came all over the chat! They have cum a total of ${currentCums} times.`);
+        return currentCums;
     }
     catch (error) {
         console.log(error);
+        return -1;
     }
 }
 
