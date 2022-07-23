@@ -174,6 +174,28 @@ client.on('message', (channel, tags, message, self) => {
                 }
                 else {
                     // Direct cum onto someone
+                    // increment sender cums
+                    // increment target's cum ons
+                    const target = splitMessage[0];
+                    incrementUserCums(sender, channel).then((result) => {
+                        if (result !== -1) {
+                            // succesfully cummed on chat
+                            client.say(channel, `borpaSpin @${sender} just cummed right on ${target}! borpaSpin They have cummed a total of ${result} times. borpaSpin`);
+                        }
+                        else {
+                            client.say(channel, `Sorry @${sender}, we couldn't handle your cum right now. There may be a problem with the database.`);
+                            return;
+                        }
+                    });
+                    incrementUserCumOns(target, channel).then((result) => {
+                        if (result !== -1) {
+                            // has successfully been cummed on
+                            client.say(channel, `borpaSpin @${target} has now been cummed on ${result} times! borpaSpin`);
+                        }
+                        else {
+                            client.say(channel, `Sorry @${sender}, we couldn't handle your cum right now. There may be a problem with the database.`);
+                        }
+                    });
                 }
             }
             else {
@@ -202,11 +224,10 @@ client.on('message', (channel, tags, message, self) => {
 /**
  *  Increments the number of cums for a given user.
  *  @async
- *  @param  {string}    channel    The channel name
  *  @param  {string}    username   The username to increment
  *  @return {number}               The current number of cums for the user | -1 if an error occurs
  */ 
-async function incrementUserCums(username, channel) {
+async function incrementUserCums(username) {
     try {
         const query = `SELECT * FROM ${sqlTable} WHERE username=${mysql.escape(username)}`;
         const userInfo = await queryDB(query);
@@ -215,7 +236,7 @@ async function incrementUserCums(username, channel) {
         if (userInfo[0]) {
             // The user already exists; just update cums
             const userCums = userInfo[0].cums;
-            currentCums = userCums + 1
+            currentCums = userCums + 1;
             const updateQuery = `UPDATE ${sqlTable} SET cums=${currentCums} WHERE username=${mysql.escape(username)}`;
             await queryDB(updateQuery);
         }
@@ -226,8 +247,41 @@ async function incrementUserCums(username, channel) {
             await queryDB(createQuery);
         }
 
-        //client.say(channel, `borpaSpin @${username} just came all over the chat! They have cum a total of ${currentCums} times.`);
         return currentCums;
+    }
+    catch (error) {
+        console.log(error);
+        return -1;
+    }
+}
+
+/**
+ *  Increments the number of cummedOn for a given user.
+ *  @async
+ *  @param  {string}    username   The username to increment
+ *  @return {number}               The current number of cummedOn for the user | -1 if an error occurs
+ */ 
+async function incrementUserCumOns(username) {
+    try {
+        const query = `SELECT * FROM ${sqlTable} WHERE username=${mysql.escape(username)}`;
+        const userInfo = await queryDB(query);
+        var currentCumOns;
+
+        if (userInfo[0]) {
+            // The user already exists; just update cums
+            const userCumOns = userInfo[0].cummedOn;
+            currentCumOns = userCumOns + 1;
+            const updateQuery = `UPDATE ${sqlTable} SET cummedOn=${currentCumOns} WHERE username=${mysql.escape(username)}`;
+            await queryDB(updateQuery);
+        }
+        else {
+            // The user is not in the database, create with one cums
+            currentCumOns = 1
+            const createQuery = `INSERT INTO ${sqlTable} (username, cummedOn) VALUES (${mysql.escape(username)}, ${currentCumOns})`;
+            await queryDB(createQuery);
+        }
+
+        return currentCumOns;
     }
     catch (error) {
         console.log(error);
