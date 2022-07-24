@@ -13,14 +13,14 @@ Some pretty shitty things can be done with bots, since they are simply Twitch us
 **Install these before doing anything else!**
 
 - [NodeJS](https://nodejs.org/en/download/)
-- [MariaDB](https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.8.3&os=windows&cpu=x86_64&pkg=msi&m=gigenet) *Use all default settings to include HeidiSQL*
+- [MariaDB](https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.6.8&os=windows&cpu=x86_64&pkg=msi&m=gigenet) *Use all default settings to include HeidiSQL*
 
 <figure>
-  <img src="https://i.imgur.com/ASyuIM7.png" alt="Image of Instructions" title="Proper Settings" width="60%"/>
+  <img src="https://i.imgur.com/pUhzR6l.png" alt="Image of Instructions" title="Proper Settings" width="60%"/>
   <figcaption><i>Download options should match the image above.</i></figcaption>
 </figure>
 
-***Since a newer version may be release depending on when you read this, select whatever version has the highest version number with no letters.***
+***This 10.6 is the LTS version so there should be no differences no matter when you're reading this.***
 
 I won't be teaching these tools here, but there is plenty of information out there as they are pretty standard tools. I will leave a link to the ones I used to get familiar. I recommened leaving every install on default, unless you know what you're doing. It will save trouble later on. Another important reminder is to remember what you set the user and pssword to for MariaDB. I made the mistake once of forgetting and it is not fun to fix. I think the common thing to do especially for a locally hosted DB is to set both to root. This will be inscure though so just be warned.
 
