@@ -44,7 +44,6 @@ TWITCH_PREFIX = <The character you want your bot to recognize>
 DATABASE_HOST = <Where you're database lives>
 DATABASE_USER = <User to authenticate to the DB>
 DATABASE_PASSWORD = <Password to authenticate to the DB>
-DATABASE_NAME = <The name of your database>
 ```
 
 NOTE: If you would like the bot to join multiple streams, in the `TWITCH_CHANNELS` make a comma-seperated list of each channel. For instance, if you would like the bot to join Stream1 and Stream2, the .env would look like `TWITCH_CHANNELS = Stream1, Stream2`
