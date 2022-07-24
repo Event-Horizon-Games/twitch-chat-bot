@@ -33,7 +33,7 @@ I won't be teaching these tools here, but there is plenty of information out the
 
 1. Create a new account for your bot *(you can technically use your own Twitch but not ideal)*
 2. Obtain an OAUTH token for your bot's account from [here](https://twitchapps.com/tmi/).  *(Please note I don't necessarily endorse that site or know it's security but I know it works for me and others recommend it.)*
-3. Download the latest release version of this repo
+3. Clone or ownload the latest release version of this repo
 4. Extract the release, and then any of the following steps will be done inside the release directory
 5. Create a ***.env*** file containing the following information ***Don't use dashes in any name for your databases. I found that out the hard way. Use underscores instead.***
 
