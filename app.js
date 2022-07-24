@@ -8,6 +8,8 @@ const mysql = require('mysql');
 var sqlError = null;
 // name of table in the database were saving things to
 var sqlTable = 'userinfo';
+// name of the sql database
+var sqlDatabase = 'twitch_bot';
 // status of commands 
 var commandDisabledList = {};
 //* Commands list here
@@ -18,7 +20,7 @@ var db = mysql.createConnection({
     host: process.env.DATABASE_HOST,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE_NAME
+    database: sqlDatabase
 });
 
 // Connect to DB
