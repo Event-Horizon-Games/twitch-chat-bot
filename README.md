@@ -59,6 +59,8 @@ switch (command) {
 }
 ```
 
+I will be adding commands that I feel add to my own personal stream. However, you can use them as reference, or delete them for all I care. Use it however best works for you.
+
 6. Add the usage of your new command to the `getUsageInfo` function like this
 
 ```javascript
