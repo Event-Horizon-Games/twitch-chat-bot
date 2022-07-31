@@ -49,7 +49,7 @@ DATABASE_PASSWORD = <Password to authenticate to the DB>
 
 NOTE: If you would like the bot to join multiple streams, in the `TWITCH_CHANNELS` make a comma-seperated list of each channel. For instance, if you would like the bot to join Stream1 and Stream2, the .env would look like `TWITCH_CHANNELS = Stream1, Stream2`
 
-5.1 Additional note, if you plan on making commands like ban or anything that would require moderator permissions, make sure to give the bot's account Mod in the appropriate channels.
+5.1. Additional note, if you plan on making commands like ban or anything that would require moderator permissions, make sure to give the bot's account Mod in the appropriate channels.
 
 6. Inside *app.js* Insert your new commands as new case statements within the switch
 
