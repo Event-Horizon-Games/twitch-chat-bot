@@ -75,3 +75,5 @@ switch (command) {
 7. Run your bot in the terminal or command line session using `node app.js`
 
 8. Stop the bot at anytime using `Ctrl+C` or the equivalent command for your environment
+
+9. Optional last step. All the previous steps would make the bot only run locally when you manually run the `node app.js` command. Once you have all the behavior the way you like and want the bot to permanently join channels, you need to choose where you want the bot to be hosted. If you have a capable machine, the bot is quite small, so I see no issue simply having it constantly run locally. However, I would try to have the bot on a seperate environment entirely. Either some VM or hosted on a server in the cloud. Whatever is a feasible alternative that suits your requirements and abilities. 
