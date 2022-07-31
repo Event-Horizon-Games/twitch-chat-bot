@@ -73,3 +73,5 @@ switch (command) {
 ```
 
 7. Run your bot in the terminal or command line session using `node app.js`
+
+8. Stop the bot at anytime using `Ctrl+C` or the equivalent command for your environment
