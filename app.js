@@ -7,7 +7,7 @@ const mysql = require('mysql');
 // global var to use with sql queries
 var sqlError = null;
 // name of the sql database
-var sqlDatabase = 'twitch_bot';
+var sqlDatabase = process.env.DATABASE_NAME;
 // name of table in the database were saving things to
 var sqlTable = 'userinfo';
 // status of commands 
