@@ -3,6 +3,8 @@
 [Join Our Discord!](https://discord.com/invite/FMp2zhT)
 # Twitch Stream Bot
 
+Big shoutout to [this](https://www.section.io/engineering-education/build-a-twitch-chatbot-in-nodejs/) guide for helping me get started.
+
 ## Disclaimer
 
 Some pretty shitty things can be done with bots, since they are simply Twitch users that can join any channel without permission from the streamer. I wish I didn't have to say this but it's needed. This applies to any bot someone creates, but since I'm creating this walkthrough I feel especially obligated to give this warning. **ONLY JOIN THE BOT TO A CHANNEL IN WHICH YOU HAVE EXPLICIT PERMISSION TO DO SO, OR KEEP IT IN YOUR OWN CHANNEL.** Please just use your common sense and use this for a fun side project and nothing more. Keep it focues on fun and making streams better, and don't use it as a weapon. I can't do a whole lot, but if I find someone uses my guide for nefarious purposes I'll do whatever I can to fuck them up. Also if a streamer on the recieving end finds this page please let me know so I can help how ever I can.
