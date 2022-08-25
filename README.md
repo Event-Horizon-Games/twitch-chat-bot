@@ -45,6 +45,7 @@ TWITCH_OAUTH = <The oauth token you generated earlier>
 TWITCH_CHANNELS = <The name of the channel for the bot to join>
 TWITCH_PREFIX = <The character you want your bot to recognize>
 DATABASE_HOST = <Where you're database lives>
+DATABASE_NAME = <The name of the database you're using>
 DATABASE_USER = <User to authenticate to the DB>
 DATABASE_PASSWORD = <Password to authenticate to the DB>
 ```
