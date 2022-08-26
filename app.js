@@ -14,6 +14,8 @@ var sqlTable = 'userinfo';
 var commandDisabledList = {};
 //* Commands list here
 var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce'];
+//* Excluded commands list (to ignore commands for other bots)
+var excludedCommandList = ['boss', 'basketball'];
 
 // create DB connection
 var db = mysql.createConnection({
@@ -73,6 +75,10 @@ client.on('message', (channel, tags, message, self) => {
 
     if (isCommandDisabled(command)) {
         client.say(channel, `@${sender} Command: ${command} is currently disabled.`);
+        return;
+    }
+
+    if (isCommandExcluded(command)) {
         return;
     }
 
@@ -335,6 +341,10 @@ function enableCommand(command) {
 function isCommandDisabled(command) {
     updateCommandDisabledList();
     return commandDisabledList[command];
+}
+
+function isCommandExcluded(command) {
+    return excludedCommandList.includes(command);
 }
 
 /** 
