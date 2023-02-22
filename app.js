@@ -4,6 +4,8 @@ require('dotenv').config();
 const tmi = require('tmi.js');
 const mysql = require('mysql');
 
+const quotes = require('./modules/quotes.js');
+
 // global var to use with sql queries
 var sqlError = null;
 // name of the sql database
@@ -222,6 +224,11 @@ client.on('message', (channel, tags, message, self) => {
 
         case 'announce':
             client.say(channel, `/announce @${sender} wants to say that \"${restOfMessage}\"`);
+            break;
+
+        case 'quote':
+            const quote = quotes.GetQuote();
+            client.say(channel, `@${sender} ${quote}.`);
             break;
 
         default:
