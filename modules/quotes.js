@@ -1,7 +1,7 @@
 const request = require('request');
 const quoteApiUrl = 'https://api.quotable.io';
 
-function GetQuote() {
+function GetQuote(client, channel, sender) {
     let quote;
     let author;
 
@@ -9,10 +9,21 @@ function GetQuote() {
         if (err) { return console.log(err); }
         quote = body.content;
         author = body.author;
-    });
 
-    //TODO i think we need to use promises and stuff
-    return `\"${quote}\" - ${author}`
+        client.say(channel, `@${sender} \"${quote}\" - ${author}.`);
+    });
 }
 
-module.exports = { GetQuote };
+function GetQuoteByAuthor(client, channel, sender, author) {
+    let cleanAuthor = author.trim().replace(' ', '-');
+
+    request(`${quoteApiUrl}/random?author=${cleanAuthor}`, { json: true }, (err, res, body) => {
+        if (err) { return console.log(err); }
+        const quote = body.content;
+        const authorAPI = body.author;
+
+        client.say(channel, `@${sender} \"${quote}\" - ${authorAPI}.`);
+    });
+}
+
+module.exports = { GetQuote, GetQuoteByAuthor };

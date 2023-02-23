@@ -1,4 +1,4 @@
-//! TO RUN THE BOT: node app.js
+//! TO RUN THE BOT: npm start
 
 require('dotenv').config();
 const tmi = require('tmi.js');
@@ -227,8 +227,7 @@ client.on('message', (channel, tags, message, self) => {
             break;
 
         case 'quote':
-            const quote = quotes.GetQuote();
-            client.say(channel, `@${sender} ${quote}.`);
+            quotes.GetQuoteByAuthor(client, channel, sender, 'Albert Einstein');
             break;
 
         default:
