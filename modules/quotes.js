@@ -1,29 +1,28 @@
-const request = require('request');
 const quoteApiUrl = 'https://api.quotable.io';
 
-function GetQuote(client, channel, sender) {
-    let quote;
-    let author;
+async function GetQuote(client, channel, sender) {
+    let response = await fetch(`${quoteApiUrl}/random`);
+    let body = response.json();
+    let quote = body.content;
+    let author = body.author;
 
-    request(`${quoteApiUrl}/random`, { json: true }, (err, res, body) => {
-        if (err) { return console.log(err); }
-        quote = body.content;
-        author = body.author;
+    console.log(`body: ${body}`);
 
-        client.say(channel, `@${sender} \"${quote}\" - ${author}.`);
-    });
+    client.say(channel, `@${sender} \"${quote}\" - ${author}.`);
 }
 
-function GetQuoteByAuthor(client, channel, sender, author) {
+async function GetQuoteByAuthor(client, channel, sender, author) {
     let cleanAuthor = author.trim().replace(' ', '-');
 
-    request(`${quoteApiUrl}/random?author=${cleanAuthor}`, { json: true }, (err, res, body) => {
-        if (err) { return console.log(err); }
-        const quote = body.content;
-        const authorAPI = body.author;
+    fetch(`${quoteApiUrl}/random?author=${cleanAuthor}`)
+        .then((response) => {
+            let body = response.json();
+            const quote = body.content;
+            const authorAPI = body.author;
+            console.log(body);
 
-        client.say(channel, `@${sender} \"${quote}\" - ${authorAPI}.`);
-    });
+            client.say(channel, `@${sender} \"${quote}\" - ${authorAPI}.`);
+        })
 }
 
 module.exports = { GetQuote, GetQuoteByAuthor };

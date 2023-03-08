@@ -5,6 +5,7 @@ const tmi = require('tmi.js');
 const mysql = require('mysql');
 
 const quotes = require('./modules/quotes.js');
+const weather = require('./modules/weather.js');
 
 // global var to use with sql queries
 var sqlError = null;
@@ -228,6 +229,7 @@ client.on('message', (channel, tags, message, self) => {
 
         case 'quote':
             quotes.GetQuoteByAuthor(client, channel, sender, 'Albert Einstein');
+            //TODO build logic to send to correct function
             break;
 
         default:

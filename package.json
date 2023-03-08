@@ -21,7 +21,6 @@
   "dependencies": {
     "dotenv": "^16.0.1",
     "mysql": "^2.18.1",
-    "request": "^2.88.2",
     "tmi.js": "^1.8.5"
   }
 }
