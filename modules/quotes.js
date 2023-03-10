@@ -1,28 +1,40 @@
 const quoteApiUrl = 'https://api.quotable.io';
 
-async function GetQuote(client, channel, sender) {
-    let response = await fetch(`${quoteApiUrl}/random`);
-    let body = response.json();
-    let quote = body.content;
-    let author = body.author;
+async function GetRandomQuote(client, channel, sender) {
+    fetch(`${quoteApiUrl}/random`)
+        .then((response) => response.json())
+        .then((data) => {
+            const quote = data.content;
+            const authorAPI = data.author;
 
-    console.log(`body: ${body}`);
-
-    client.say(channel, `@${sender} \"${quote}\" - ${author}.`);
+            client.say(channel, `@${sender} \"${quote}\" - ${authorAPI}.`);
+        })
+        .catch((error) => {
+            client.say(channel, `@${sender} An error occured with the command.`);
+            console.log(error);
+        });
 }
 
 async function GetQuoteByAuthor(client, channel, sender, author) {
     let cleanAuthor = author.trim().replace(' ', '-');
 
     fetch(`${quoteApiUrl}/random?author=${cleanAuthor}`)
-        .then((response) => {
-            let body = response.json();
-            const quote = body.content;
-            const authorAPI = body.author;
-            console.log(body);
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.statusCode === 404) {
+                client.say(channel, `@${sender} ${data.statusMessage}`);
+                return
+            }
+
+            const quote = data.content;
+            const authorAPI = data.author;
 
             client.say(channel, `@${sender} \"${quote}\" - ${authorAPI}.`);
         })
+        .catch((error) => {
+            client.say(channel, `@${sender} An error occured with the command.`);
+            console.log(error);
+        });
 }
 
-module.exports = { GetQuote, GetQuoteByAuthor };
+module.exports = { GetRandomQuote, GetQuoteByAuthor };

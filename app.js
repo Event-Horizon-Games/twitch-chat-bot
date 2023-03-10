@@ -16,7 +16,7 @@ var sqlTable = 'userinfo';
 // status of commands 
 var commandDisabledList = {};
 //* Commands list here
-var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce'];
+var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather'];
 //* Excluded commands list (to ignore commands for other bots)
 var excludedCommandList = ['boss', 'basketball'];
 
@@ -228,8 +228,16 @@ client.on('message', (channel, tags, message, self) => {
             break;
 
         case 'quote':
-            quotes.GetQuoteByAuthor(client, channel, sender, 'Albert Einstein');
-            //TODO build logic to send to correct function
+            if (restOfMessage) {
+                quotes.GetQuoteByAuthor(client, channel, sender, restOfMessage);
+            }
+            else {
+                quotes.GetRandomQuote(client, channel, sender);
+            }
+            break;
+
+        case 'weather':
+            weather.GetWeather(client, channel, sender, "London", "England");
             break;
 
         default:
