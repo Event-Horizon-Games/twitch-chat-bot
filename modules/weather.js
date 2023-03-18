@@ -22,9 +22,11 @@ async function GetWeather(client, channel, sender, city, country) {
             .then((response) => response.json())
             .then((data) => {
                 const temp = data.main.temp;
+                const apiCity = data.name;
+                const apiCountryId = data.sys.country;
 
                 // \u00B0 is the degree symbol
-                client.say(channel, `@${sender} It is currently ${temp}\u00B0F in ${city}, ${country}.`);
+                client.say(channel, `@${sender} It is currently ${temp}\u00B0F in ${apiCity}, ${apiCountryId}.`);
             })
             .catch((error) => {
                 client.say(channel, `@${sender} An error occured with the command.`);
