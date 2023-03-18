@@ -237,7 +237,7 @@ client.on('message', (channel, tags, message, self) => {
             break;
 
         case 'weather':
-            weather.GetWeather(client, channel, sender, "London", "England");
+            weather.GetWeather(client, channel, sender, "London", "United Kingdom");
             break;
 
         default:
