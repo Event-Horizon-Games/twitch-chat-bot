@@ -242,7 +242,15 @@ client.on('message', (channel, tags, message, self) => {
             break;
 
         case 'weather':
-            weather.GetWeather(client, channel, sender, "London", "United Kingdom");
+            const splitMessage = restOfMessage.split(' ');
+
+            if (splitMessage.length === 1 || splitMessage.length === 2) {
+                weather.GetWeather(client, channel, sender, splitMessage[0], splitMessage[1]);
+            }
+            else {
+                //todo  handle errors
+            }
+            
             break;
 
         default:
