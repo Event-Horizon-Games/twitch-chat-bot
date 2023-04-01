@@ -187,7 +187,7 @@ client.on('message', (channel, tags, message, self) => {
                     // Direct cum onto someone
                     // increment sender cums
                     // increment target's cum ons
-                    const target = splitMessage[0];
+                    var target = splitMessage[0];
                     if (target.charAt(0) === '@') {
                         // Remove leading @ to clean input for database
                         target = target.slice(1);
