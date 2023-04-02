@@ -244,13 +244,16 @@ client.on('message', (channel, tags, message, self) => {
         case 'weather':
             const splitMessage = restOfMessage.split(' ');
 
-            if (splitMessage.length === 1 || splitMessage.length === 2) {
-                weather.GetWeather(client, channel, sender, splitMessage[0], splitMessage[1]);
+            if(splitMessage.length === 1) {
+                const city = splitMessage[0];
+                weather.GetWeather(client, channel, sender, city);
             }
             else {
-                //todo  handle errors
+                const city = splitMessage[0];
+                const country = splitMessage.slice(1).join(' ');
+                weather.GetWeather(client, channel, sender, city, country);
             }
-            
+
             break;
 
         default:

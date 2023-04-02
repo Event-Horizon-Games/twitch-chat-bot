@@ -4,10 +4,14 @@ const CountryCodes = require('../country_codes.json');
 const weatherToken = process.env.OPENWEATHER_TOKEN;
 
 async function GetWeather(client, channel, sender, city, country) {
-    let countryCode = GetCountryCode(country);
-    if (!(countryCode)) {
-        client.say(channel, `@${sender} Unable to get the code for the given country. Check https://datahub.io/core/country-list/r/0.html for a list of valid country names.`);
-        return;
+    var countryCode = "";
+
+    if (country) {
+        countryCode = GetCountryCode(country);
+        if (!(countryCode)) {
+            client.say(channel, `@${sender} Unable to get the code for "${country}". Check https://datahub.io/core/country-list/r/0.html for a list of valid country names.`);
+            return;
+        }
     }
 
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city},${countryCode}&appid=${weatherToken}`)
@@ -43,7 +47,7 @@ module.exports = { GetWeather }
 
 function GetCountryCode(country) {
     for (var jsonCountry of CountryCodes) {
-        if (jsonCountry.Name === country) {
+        if (jsonCountry.Name.toLowerCase() === country.toLowerCase()) {
             return jsonCountry.Code;
         }
     }
