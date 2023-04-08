@@ -413,16 +413,13 @@ function getUsageInfo(command) {
             return "Returns the usage info for a command. Usage: !usage <(string) command>. Example: \"!usage commands\"";
 
         case 'hey':
-            
-            break;
+            return "Says a friendly hello to whatever kind chatter greets the bot. Usage: !hey";
 
         case 'cum':
-            
-            break;
+            return "Cums right on chat or another user. Usage: !cum (<username>). Example: !cum | or | !cum @gravitybzk.";
 
         case 'announce':
-            
-            break;
+            return "Sends an announcement to chat from the user with the message that's sent. Usage: !announce <message>. Example: !announce hello everyone";
 
         default:
             return "No usage. Unknown command!";
