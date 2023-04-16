@@ -1,6 +1,7 @@
 ![Discord](https://img.shields.io/discord/443469615780200460?color=purple&label=Event%20Horizon%20Discord&logo=discord) ![GitHub](https://img.shields.io/github/license/event-horizon-games/twitch-chat-bot) ![GitHub all releases](https://img.shields.io/github/downloads/Event-Horizon-games/twitch-chat-bot/total)
 
 [Join Our Discord!](https://discord.com/invite/FMp2zhT)
+
 # Twitch Stream Bot
 
 Big shoutout to [this](https://www.section.io/engineering-education/build-a-twitch-chatbot-in-nodejs/) guide for helping me get started.
@@ -75,8 +76,8 @@ switch (command) {
 }
 ```
 
-7. Run your bot in the terminal or command line session using `node app.js`
+7. Run your bot in the terminal or command line session using `npm start`
 
 8. Stop the bot at anytime using `Ctrl+C` or the equivalent command for your environment
 
-9. Optional last step. All the previous steps would make the bot only run locally when you manually run the `node app.js` command. Once you have all the behavior the way you like and want the bot to permanently join channels, you need to choose where you want the bot to be hosted. If you have a capable machine, the bot is quite small, so I see no issue simply having it constantly run locally. However, I would try to have the bot on a seperate environment entirely. Either some VM or hosted on a server in the cloud. Whatever is a feasible alternative that suits your requirements and abilities. 
+9. Optional last step. All the previous steps would make the bot only run locally when you manually run the `npm start` command. Once you have all the behavior the way you like and want the bot to permanently join channels, you need to choose where you want the bot to be hosted. If you have a capable machine, the bot is quite small, so I see no issue simply having it constantly run locally. However, I would try to have the bot on a seperate environment entirely. Either some VM or hosted on a server in the cloud. Whatever is a feasible alternative that suits your requirements and abilities.

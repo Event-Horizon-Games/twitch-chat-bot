@@ -416,7 +416,7 @@ function getUsageInfo(command) {
             return "Says a friendly hello to whatever kind chatter greets the bot. Usage: !hey";
 
         case 'cum':
-            return "Cums right on chat or another user. Usage: !cum (<username>). Example: !cum | or | !cum @gravitybzk.";
+            return "Cums on all of chat or a specific user. Usage: !cum (<username>). Example: !cum | or | !cum @gravitybzk.";
 
         case 'announce':
             return "Sends an announcement to chat from the user with the message that's sent. Usage: !announce <message>. Example: !announce hello everyone";
