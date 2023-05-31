@@ -16,9 +16,9 @@ var sqlTable = 'userinfo';
 // status of commands 
 var commandDisabledList = {};
 //* Commands list here
-var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather'];
+var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather', 'whoisme'];
 //* Excluded commands list (to ignore commands for other bots)
-var excludedCommandList = ['boss', 'basketball'];
+var excludedCommandList = ['boss', 'basketball', 'permit', 'nopixel', 'turbo', 'ads', 'emotes'];
 
 // create DB connection
 var db = mysql.createConnection({
@@ -70,7 +70,7 @@ client.on('message', (channel, tags, message, self) => {
     // Ignore message if it does not contain the bot's prefix
     if (!(messagePrefix === `${process.env.TWITCH_PREFIX}`)) {
         // Does not have the bot's prefix in the first character; IGNORE
-        console.log('not a command');
+        //console.log('not a command');
         return;
     }
 
@@ -254,6 +254,10 @@ client.on('message', (channel, tags, message, self) => {
                 weather.GetWeather(client, channel, sender, city, country);
             }
 
+            break;
+
+        case 'whoisme':
+            client.say(channel, `@${sender} MrDestructoid I am a bot made by GravityBZK. Beep Boop. MrDestructoid Ignore me if I mess up I'm trying my best. MrDestructoid`);
             break;
 
         default:
