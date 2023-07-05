@@ -261,7 +261,7 @@ client.on('message', (channel, tags, message, self) => {
             break;
 
         default:
-            client.say(channel, `@${sender} the command ${command} was not found. Use !commands to see a list of all commands for this bot.`);
+            //client.say(channel, `@${sender} the command ${command} was not found. Use !commands to see a list of all commands for this bot.`);
     }
 });
 
