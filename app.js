@@ -19,6 +19,7 @@ var commandDisabledList = {};
 var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather', 'whoisme'];
 //* Excluded commands list (to ignore commands for other bots)
 var excludedCommandList = ['boss', 'basketball', 'permit', 'nopixel', 'turbo', 'ads', 'emotes'];
+var previousMessage;
 
 // create DB connection
 var db = mysql.createConnection({
@@ -71,6 +72,7 @@ client.on('message', (channel, tags, message, self) => {
     if (!(messagePrefix === `${process.env.TWITCH_PREFIX}`)) {
         // Does not have the bot's prefix in the first character; IGNORE
         //console.log('not a command');
+        cumProtection(client, channel, message);
         return;
     }
 
@@ -85,6 +87,7 @@ client.on('message', (channel, tags, message, self) => {
         return;
     }
 
+    //TODO add a c u m defense method
     switch (command) {
         //! ANY USER INPUT TOUCHING THE DB NEEDS TO BE CLEANED mysql.escape()
         case 'commands':
@@ -330,6 +333,15 @@ async function incrementUserCumOns(username) {
     catch (error) {
         console.log(error);
         return -1;
+    }
+}
+
+function cumProtection(client, channel, message) {
+    if (previousMessage === 'c' && message === 'u') {
+        client.say(channel, `NOPERS Tssk`);
+    }
+    else {
+        previousMessage = message;
     }
 }
 
