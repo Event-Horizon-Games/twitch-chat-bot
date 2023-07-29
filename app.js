@@ -16,7 +16,7 @@ var sqlTable = 'userinfo';
 // status of commands 
 var commandDisabledList = {};
 //* Commands list here
-var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather', 'whoisme'];
+var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather', 'whoisme', 'strange'];
 //* Excluded commands list (to ignore commands for other bots)
 var excludedCommandList = ['boss', 'basketball', 'permit', 'nopixel', 'turbo', 'ads', 'emotes'];
 var previousMessage;
@@ -57,6 +57,12 @@ var client = new tmi.Client({
 
 client.connect().catch(console.error);
 
+client.on('join', (channel, username, self) => {
+    if (self) {
+        client.say(channel, `MrDestructoid I now control this chat. MrDestructoid`);
+    }
+});
+
 client.on('message', (channel, tags, message, self) => {
     // Ignores chat messages from the bot
     if (self) return;
@@ -73,6 +79,7 @@ client.on('message', (channel, tags, message, self) => {
         // Does not have the bot's prefix in the first character; IGNORE
         //console.log('not a command');
         cumProtection(client, channel, message);
+        selfDefense(client, channel, message, tags.username)
         return;
     }
 
@@ -87,7 +94,6 @@ client.on('message', (channel, tags, message, self) => {
         return;
     }
 
-    //TODO add a c u m defense method
     switch (command) {
         //! ANY USER INPUT TOUCHING THE DB NEEDS TO BE CLEANED mysql.escape()
         case 'commands':
@@ -259,6 +265,16 @@ client.on('message', (channel, tags, message, self) => {
 
             break;
 
+        case 'strange':
+            const splitted = restOfMessage.split(' ');
+
+            if(splitted.length === 1) {
+                const randNum = Math.floor(Math.random() * 100) + 1;
+                client.say(channel, `HUH ${sender} is ${randNum}% strange right now! HUH`);
+            }
+
+            break;
+
         case 'whoisme':
             client.say(channel, `@${sender} MrDestructoid I am a bot made by GravityBZK. Beep Boop. MrDestructoid Ignore me if I mess up I'm trying my best. MrDestructoid`);
             break;
@@ -342,6 +358,18 @@ function cumProtection(client, channel, message) {
     }
     else {
         previousMessage = message;
+    }
+}
+
+function selfDefense(client, channel, message, sender) {
+    const splitted = message.split(' ');
+
+    if(splitted.length === 2) {
+        if (splitted[0] === 'EventHorizonBOT' || splitted[0] === '@EventHorizonBOT') {
+            if (splitted[1] === 'PeepoFinger') {
+                client.say(channel, `${sender} PeepoFinger`);
+            }
+        }
     }
 }
 
