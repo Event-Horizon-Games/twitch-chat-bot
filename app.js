@@ -4,9 +4,6 @@ require('dotenv').config();
 const tmi = require('tmi.js');
 const mysql = require('mysql');
 
-const quotes = require('./modules/quotes.js');
-const weather = require('./modules/weather.js');
-
 // global var to use with sql queries
 var sqlError = null;
 // name of the sql database
@@ -56,6 +53,10 @@ global.client = new tmi.Client({
 });
 
 client.connect().catch(console.error);
+
+const quotes = require('./modules/quotes.js');
+const weather = require('./modules/weather.js');
+const subs = require('./modules/subs.js');
 
 client.on('join', (channel, username, self) => {
     if (self) {
