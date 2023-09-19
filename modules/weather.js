@@ -3,7 +3,7 @@ const CountryCodes = require('../country_codes.json');
 
 const weatherToken = process.env.OPENWEATHER_TOKEN;
 
-async function GetWeather(client, channel, sender, city, country) {
+async function GetWeather(channel, sender, city, country) {
     var countryCode = "";
 
     if (country) {

@@ -40,7 +40,7 @@ const channelsString = process.env.TWITCH_CHANNELS;
 const channelsArray = channelsString.replace(' ', '').split(',');
 
 // create the twitch tmi client
-var client = new tmi.Client({
+global.client = new tmi.Client({
     options: { debug: true, messagesLogLevel: "info"},
     connection: {
         reconnect: true,
@@ -78,8 +78,8 @@ client.on('message', (channel, tags, message, self) => {
     if (!(messagePrefix === `${process.env.TWITCH_PREFIX}`)) {
         // Does not have the bot's prefix in the first character; IGNORE
         //console.log('not a command');
-        cumProtection(client, channel, message);
-        selfDefense(client, channel, message, tags.username)
+        cumProtection(channel, message);
+        selfDefense(channel, message, tags.username)
         return;
     }
 
@@ -243,10 +243,10 @@ client.on('message', (channel, tags, message, self) => {
 
         case 'quote':
             if (restOfMessage) {
-                quotes.GetQuoteByAuthor(client, channel, sender, restOfMessage);
+                quotes.GetQuoteByAuthor(channel, sender, restOfMessage);
             }
             else {
-                quotes.GetRandomQuote(client, channel, sender);
+                quotes.GetRandomQuote(channel, sender);
             }
             break;
 
@@ -255,12 +255,12 @@ client.on('message', (channel, tags, message, self) => {
 
             if(splitMessage.length === 1) {
                 const city = splitMessage[0];
-                weather.GetWeather(client, channel, sender, city);
+                weather.GetWeather(channel, sender, city);
             }
             else {
                 const city = splitMessage[0];
                 const country = splitMessage.slice(1).join(' ');
-                weather.GetWeather(client, channel, sender, city, country);
+                weather.GetWeather(channel, sender, city, country);
             }
 
             break;
@@ -352,7 +352,7 @@ async function incrementUserCumOns(username) {
     }
 }
 
-function cumProtection(client, channel, message) {
+function cumProtection(channel, message) {
     if (previousMessage === 'c' && message === 'u') {
         client.say(channel, `NOPERS Tssk`);
     }
@@ -361,7 +361,7 @@ function cumProtection(client, channel, message) {
     }
 }
 
-function selfDefense(client, channel, message, sender) {
+function selfDefense(channel, message, sender) {
     const splitted = message.split(' ');
 
     if(splitted.length === 2) {

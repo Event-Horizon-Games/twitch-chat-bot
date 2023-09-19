@@ -1,6 +1,6 @@
 const quoteApiUrl = 'https://api.quotable.io';
 
-async function GetRandomQuote(client, channel, sender) {
+async function GetRandomQuote(channel, sender) {
     fetch(`${quoteApiUrl}/random`)
         .then((response) => response.json())
         .then((data) => {
@@ -15,7 +15,7 @@ async function GetRandomQuote(client, channel, sender) {
         });
 }
 
-async function GetQuoteByAuthor(client, channel, sender, author) {
+async function GetQuoteByAuthor(channel, sender, author) {
     let cleanAuthor = author.trim().replace(' ', '-');
 
     fetch(`${quoteApiUrl}/random?author=${cleanAuthor}`)
