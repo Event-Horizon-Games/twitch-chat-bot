@@ -13,9 +13,10 @@ var sqlTable = 'userinfo';
 // status of commands 
 var commandDisabledList = {};
 //* Commands list here
-var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather', 'whoisme', 'strange'];
+var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather', 'whoisme', 'strange', 'color', 'colors'];
 //* Excluded commands list (to ignore commands for other bots)
 var excludedCommandList = ['boss', 'basketball', 'permit', 'nopixel', 'turbo', 'ads', 'emotes'];
+var usernameColors = ['Blue', 'BlueViolet', 'CadetBlue', 'Chocolate', 'Coral', 'DodgerBlue', 'Firebrick', 'GoldenRod', 'Green', 'HotPink', 'OrangeRed', 'Red', 'SeaGreen', 'SpringGreen', 'YellowGreen']
 var previousMessage;
 
 // create DB connection
@@ -276,6 +277,14 @@ client.on('message', (channel, tags, message, self) => {
 
             break;
 
+        case 'colors': 
+            client.say(channel, `@${sender} The valid colors for the bot's username are: ${usernameColors.join(', ')}`);
+            break;
+
+        case 'color':
+            changeUsernameColor(channel, sender, restOfMessage);
+            break;
+
         case 'whoisme':
             client.say(channel, `@${sender} MrDestructoid I am a bot made by GravityBZK. Beep Boop. MrDestructoid Ignore me if I mess up I'm trying my best. MrDestructoid`);
             break;
@@ -350,6 +359,22 @@ async function incrementUserCumOns(username) {
     catch (error) {
         console.log(error);
         return -1;
+    }
+}
+
+async function changeUsernameColor(channel, sender, color) {
+    if (usernameColors.includes(color)) {
+        client.color(color)
+        .then((data) => {
+            // data returns [color]
+        }).catch((err) => {
+            console.log(err);
+        });
+
+        client.say(channel, `@${sender} The bot's username color has been changed to ${color}.`);
+    }
+    else {
+        client.say(channel, `@${sender} The color provided is not a valid color for the bot's username. Type !color for available colors.`);
     }
 }
 
