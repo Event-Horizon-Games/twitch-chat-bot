@@ -10,10 +10,10 @@ var sqlError = null;
 var sqlDatabase = process.env.DATABASE_NAME;
 // name of table in the database were saving things to
 var sqlTable = 'userinfo';
-// status of commands 
+// status of commands
 var commandDisabledList = {};
 //* Commands list here
-var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather', 'whoisme', 'strange', 'color', 'colors'];
+var commandList = ['usage', 'enable', 'disable', 'hey', 'cum', 'announce', 'quote', 'weather', 'whoisme', 'strange', 'color', 'colors', 'songtest', 'roll'];
 //* Excluded commands list (to ignore commands for other bots)
 var excludedCommandList = ['boss', 'basketball', 'permit', 'nopixel', 'turbo', 'ads', 'emotes'];
 var usernameColors = ['Blue', 'BlueViolet', 'CadetBlue', 'Chocolate', 'Coral', 'DodgerBlue', 'Firebrick', 'GoldenRod', 'Green', 'HotPink', 'OrangeRed', 'Red', 'SeaGreen', 'SpringGreen', 'YellowGreen']
@@ -58,6 +58,7 @@ client.connect().catch(console.error);
 const quotes = require('./modules/quotes.js');
 const weather = require('./modules/weather.js');
 const subs = require('./modules/subs.js');
+const spotify = require('./modules/spotify.js');
 
 client.on('join', (channel, username, self) => {
     if (self) {
@@ -267,6 +268,10 @@ client.on('message', (channel, tags, message, self) => {
 
             break;
 
+        case 'songtest':
+            spotify.GetSpotifySong();
+            break;
+
         case 'strange':
             const splitted = restOfMessage.split(' ');
 
@@ -277,12 +282,36 @@ client.on('message', (channel, tags, message, self) => {
 
             break;
 
-        case 'colors': 
+        case 'colors':
             client.say(channel, `@${sender} The valid colors for the bot's username are: ${usernameColors.join(', ')}`);
             break;
 
         case 'color':
             changeUsernameColor(channel, sender, restOfMessage);
+            break;
+
+        case 'roll':
+            const splitParams = restOfMessage.split(' ');
+            if(splitParams.length !== 2) {
+                client.say(channel, `@${sender} Incorrect usage for the roll command.`);
+                break;
+            }
+
+            const numDie = Number(splitParams[0]);
+            const maxSides = Number(splitParams[1]);
+
+            const firstRand = Math.floor(Math.random() * maxSides) + 1;
+            var rollString = firstRand;
+
+            if (numDie > 1) {
+                for (let i = 0; i < numDie - 1; i++) {
+                    const thisRand = Math.floor(Math.random() * maxSides) + 1;
+                    rollString += ` | ${thisRand}`;
+                }
+            }
+
+            client.say(channel, `@${sender} ${rollString}`);
+
             break;
 
         case 'whoisme':
@@ -299,7 +328,7 @@ client.on('message', (channel, tags, message, self) => {
  *  @async
  *  @param  {string}    username   The username to increment
  *  @return {number}               The current number of cums for the user | -1 if an error occurs
- */ 
+ */
 async function incrementUserCums(username) {
     try {
         const query = `SELECT * FROM ${sqlTable} WHERE username=${mysql.escape(username)}`;
@@ -333,7 +362,7 @@ async function incrementUserCums(username) {
  *  @async
  *  @param  {string}    username   The username to increment
  *  @return {number}               The current number of cummedOn for the user | -1 if an error occurs
- */ 
+ */
 async function incrementUserCumOns(username) {
     try {
         const query = `SELECT * FROM ${sqlTable} WHERE username=${mysql.escape(username)}`;
@@ -403,7 +432,7 @@ function selfDefense(channel, message, sender) {
  *  Executes a query and returns the result
  *  @param      {string}    query   the query to execute on the database
  *  @returns    {Promise}           promise containing the execution
- */ 
+ */
 function queryDB(query) {
     return new Promise((resolve, reject) => {
         db.query(query + ';', (err, result) => {
@@ -419,18 +448,18 @@ function queryDB(query) {
     });
 }
 
-/** 
+/**
  *  Disables a given command
  *  @param      {string}    command     The command to disable
- */ 
+ */
 function disableCommand(command) {
     commandDisabledList[command] = true;
 }
 
-/** 
+/**
  *  Enables a given command
  *  @param      {string}    command     The command to disable
- */ 
+ */
 function enableCommand(command) {
     commandDisabledList[command] = false;
 }
@@ -439,7 +468,7 @@ function enableCommand(command) {
  *  Returns whether or not a commmand is currently disabled
  *  @param      {string}    command     The command to get status for
  *  @returns    {boolean}               True - command is currently DISABLED | False - command is currently ENABLED
- */ 
+ */
 function isCommandDisabled(command) {
     updateCommandDisabledList();
     return commandDisabledList[command];
@@ -449,9 +478,9 @@ function isCommandExcluded(command) {
     return excludedCommandList.includes(command);
 }
 
-/** 
+/**
  *  Updates the disabled list to have all commands in it, with them defaulting to enabled.
- */ 
+ */
 function updateCommandDisabledList() {
     commandList.forEach((command) => {
         if(!(command in commandDisabledList)) {
@@ -460,11 +489,11 @@ function updateCommandDisabledList() {
     });
 }
 
-/** 
+/**
  *  Checks if a command is a valid command for the bot
  *  @param      {string}    command     The commmand to check
  *  @returns    {boolean}               True - the command is valid | False - the command is not valid
- */ 
+ */
 function isValidCommand(command) {
     return commandList.includes(command);
 }
@@ -473,7 +502,7 @@ function isValidCommand(command) {
  *  Returns a string containing the usage info on a command
  *  @param      {string}    command     the string form of the command
  *  @returns                            The string usage sentence of the given commmand.
- */ 
+ */
 function getUsageInfo(command) {
     switch (command) {
         case 'commands':
@@ -498,7 +527,7 @@ function getUsageInfo(command) {
 
 process.stdin.resume();
 
-//! This was being called too early and closing the connection 
+//! This was being called too early and closing the connection
 // referenced from here: https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
 function exitHandler(options) {
     //Close the connection to the database
