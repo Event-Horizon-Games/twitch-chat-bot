@@ -57,6 +57,7 @@ client.connect().catch(console.error);
 
 const quotes = require('./modules/quotes.js');
 const weather = require('./modules/weather.js');
+const tracker = require('./modules/tracker.js');
 const subs = require('./modules/subs.js');
 const spotify = require('./modules/spotify.js');
 
@@ -82,7 +83,8 @@ client.on('message', (channel, tags, message, self) => {
         // Does not have the bot's prefix in the first character; IGNORE
         //console.log('not a command');
         cumProtection(channel, message);
-        selfDefense(channel, message, tags.username)
+        selfDefense(channel, message, tags.username);
+        gigaResponse(channel, message);
         return;
     }
 
@@ -425,6 +427,12 @@ function selfDefense(channel, message, sender) {
                 client.say(channel, `${sender} PeepoFinger`);
             }
         }
+    }
+}
+
+function gigaResponse(channel, message) {
+    if (message === 'GIGA') {
+        client.say(channel, `GIGA`);
     }
 }
 
