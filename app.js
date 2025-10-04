@@ -317,7 +317,7 @@ client.on('message', (channel, tags, message, self) => {
             break;
 
         case 'whoisme':
-            client.say(channel, `@${sender} MrDestructoid I am a bot made by GravityBZK. Beep Boop. MrDestructoid Ignore me if I mess up I'm trying my best. MrDestructoid`);
+            client.say(channel, `@${sender} MrDestructoid I am a bot made by bazooka. Check out the repo: https://github.com/Event-Horizon-Games/twitch-chat-bot Beep Boop. MrDestructoid Ignore me if I mess up I'm trying my best. MrDestructoid`);
             break;
 
         default:
