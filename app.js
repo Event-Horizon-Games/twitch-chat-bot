@@ -3,6 +3,7 @@
 require('dotenv').config();
 const tmi = require('tmi.js');
 const mysql = require('mysql');
+const esports = require('./modules/esports-scores');
 
 // global var to use with sql queries
 var sqlError = null;
@@ -28,7 +29,7 @@ var db = mysql.createConnection({
 });
 
 // Connect to DB
-db.connect(function(err) {
+db.connect(function (err) {
     if (err) throw err;
     console.log('Connected to database!');
 });
@@ -37,9 +38,11 @@ db.connect(function(err) {
 const channelsString = process.env.TWITCH_CHANNELS;
 const channelsArray = channelsString.replace(' ', '').split(',');
 
+let wasLive = false;
+
 // create the twitch tmi client
 global.client = new tmi.Client({
-    options: { debug: true, messagesLogLevel: "info"},
+    options: { debug: true, messagesLogLevel: "info" },
     connection: {
         reconnect: true,
         secure: true
@@ -54,12 +57,14 @@ global.client = new tmi.Client({
 });
 
 client.connect().catch(console.error);
+esports.start();
 
 const quotes = require('./modules/quotes.js');
 const weather = require('./modules/weather.js');
 const tracker = require('./modules/tracker.js');
 const subs = require('./modules/subs.js');
 const spotify = require('./modules/spotify.js');
+const esportsAPI = require('./modules/esports-scores.js');
 
 client.on('join', (channel, username, self) => {
     if (self) {
@@ -85,6 +90,7 @@ client.on('message', (channel, tags, message, self) => {
         cumProtection(channel, message);
         selfDefense(channel, message, tags.username);
         gigaResponse(channel, message);
+        esports.handleEsportsCommand(channel, message);
         return;
     }
 
@@ -132,8 +138,8 @@ client.on('message', (channel, tags, message, self) => {
                 }
                 else {
                     // sent only one parameter good
-                    if(isCommandDisabled(splitMessage[0])) {
-                        if(isValidCommand(splitMessage[0])) {
+                    if (isCommandDisabled(splitMessage[0])) {
+                        if (isValidCommand(splitMessage[0])) {
                             enableCommand(splitMessage[0]);
                             client.say(channel, `@${sender} ${splitMessage[0]} has been enabled.`);
                         }
@@ -161,9 +167,9 @@ client.on('message', (channel, tags, message, self) => {
                 }
                 else {
                     // sent only one parameter good
-                    if(!isCommandDisabled(splitMessage[0])) {
-                        if(isValidCommand(splitMessage[0])) {
-                            if(splitMessage[0] === 'commands' || splitMessage[0] === 'enable' || splitMessage[0] === 'disable' || splitMessage[0] === 'usage') {
+                    if (!isCommandDisabled(splitMessage[0])) {
+                        if (isValidCommand(splitMessage[0])) {
+                            if (splitMessage[0] === 'commands' || splitMessage[0] === 'enable' || splitMessage[0] === 'disable' || splitMessage[0] === 'usage') {
                                 client.say(channel, `@${sender} Command: ${splitMessage[0]} can not be disabled.`);
                             }
                             else {
@@ -258,7 +264,7 @@ client.on('message', (channel, tags, message, self) => {
         case 'weather':
             const splitMessage = restOfMessage.split(' ');
 
-            if(splitMessage.length === 1) {
+            if (splitMessage.length === 1) {
                 const city = splitMessage[0];
                 weather.GetWeather(channel, sender, city);
             }
@@ -277,7 +283,7 @@ client.on('message', (channel, tags, message, self) => {
         case 'strange':
             const splitted = restOfMessage.split(' ');
 
-            if(splitted.length === 1) {
+            if (splitted.length === 1) {
                 const randNum = Math.floor(Math.random() * 100) + 1;
                 client.say(channel, `HUH ${sender} is ${randNum}% strange right now! HUH`);
             }
@@ -294,7 +300,7 @@ client.on('message', (channel, tags, message, self) => {
 
         case 'roll':
             const splitParams = restOfMessage.split(' ');
-            if(splitParams.length !== 2) {
+            if (splitParams.length !== 2) {
                 client.say(channel, `@${sender} Incorrect usage for the roll command.`);
                 break;
             }
@@ -321,7 +327,7 @@ client.on('message', (channel, tags, message, self) => {
             break;
 
         default:
-            //client.say(channel, `@${sender} the command ${command} was not found. Use !commands to see a list of all commands for this bot.`);
+        //client.say(channel, `@${sender} the command ${command} was not found. Use !commands to see a list of all commands for this bot.`);
     }
 });
 
@@ -396,11 +402,11 @@ async function incrementUserCumOns(username) {
 async function changeUsernameColor(channel, sender, color) {
     if (usernameColors.includes(color)) {
         client.color(color)
-        .then((data) => {
-            // data returns [color]
-        }).catch((err) => {
-            console.log(err);
-        });
+            .then((data) => {
+                // data returns [color]
+            }).catch((err) => {
+                console.log(err);
+            });
 
         client.say(channel, `@${sender} The bot's username color has been changed to ${color}.`);
     }
@@ -421,7 +427,7 @@ function cumProtection(channel, message) {
 function selfDefense(channel, message, sender) {
     const splitted = message.split(' ');
 
-    if(splitted.length === 2) {
+    if (splitted.length === 2) {
         if (splitted[0] === 'EventHorizonBOT' || splitted[0] === '@EventHorizonBOT') {
             if (splitted[1] === 'PeepoFinger') {
                 client.say(channel, `${sender} PeepoFinger`);
@@ -491,7 +497,7 @@ function isCommandExcluded(command) {
  */
 function updateCommandDisabledList() {
     commandList.forEach((command) => {
-        if(!(command in commandDisabledList)) {
+        if (!(command in commandDisabledList)) {
             commandDisabledList[command] = false;
         }
     });
@@ -533,6 +539,32 @@ function getUsageInfo(command) {
     }
 }
 
+async function checkStream() {
+    const res = await fetch(`https://api.twitch.tv/helix/streams?user_login=bazookattv`, {
+        headers: {
+            'Client-ID': process.env.TWITCH_CLIENT_ID,
+            'Authorization': `Bearer ${process.env.TWITCH_OAUTH}`
+        }
+    });
+
+    const data = await res.json();
+    const isLive = data.data.length > 0;
+
+    if (isLive && !wasLive) {
+        console.log('Channel just went live!');
+
+        client.say(channel, "o7 Ready to do work o7");
+    }
+    else {
+        console.log('Channel not live.');
+    }
+
+    wasLive = isLive;
+}
+
+// Check every 60 seconds
+setInterval(checkStream, 60000);
+
 process.stdin.resume();
 
 //! This was being called too early and closing the connection
@@ -555,4 +587,4 @@ function exitHandler(options) {
 }
 
 process.on('exit', exitHandler.bind(null));
-process.on('SIGINT', exitHandler.bind(null, {exit:true}));
+process.on('SIGINT', exitHandler.bind(null, { exit: true }));
