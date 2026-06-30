@@ -4,6 +4,7 @@ require('dotenv').config();
 const tmi = require('tmi.js');
 const mysql = require('mysql');
 const esports = require('./modules/esports-scores');
+const twitchAuth = require('./modules/twitch-auth');
 
 // global var to use with sql queries
 var sqlError = null;
@@ -262,16 +263,16 @@ client.on('message', (channel, tags, message, self) => {
             break;
 
         case 'weather':
-            const splitMessage = restOfMessage.split(' ');
+            const [cityPart, countryPart] = restOfMessage.split(',').map(part => part?.trim());
 
-            if (splitMessage.length === 1) {
-                const city = splitMessage[0];
-                weather.GetWeather(channel, sender, city);
+            if (!cityPart) {
+                client.say(channel, `@${sender} Usage: !weather <city>(, <country>). Example: !weather new york, USA`);
+            }
+            else if (countryPart) {
+                weather.GetWeather(channel, sender, cityPart, countryPart);
             }
             else {
-                const city = splitMessage[0];
-                const country = splitMessage.slice(1).join(' ');
-                weather.GetWeather(channel, sender, city, country);
+                weather.GetWeather(channel, sender, cityPart);
             }
 
             break;
@@ -540,20 +541,35 @@ function getUsageInfo(command) {
 }
 
 async function checkStream() {
-    const res = await fetch(`https://api.twitch.tv/helix/streams?user_login=bazookattv`, {
-        headers: {
-            'Client-ID': process.env.TWITCH_CLIENT_ID,
-            'Authorization': `Bearer ${process.env.TWITCH_OAUTH}`
-        }
-    });
+    let token, res, data;
 
-    const data = await res.json();
+    try {
+        token = await twitchAuth.getAppAccessToken();
+
+        res = await fetch(`https://api.twitch.tv/helix/streams?user_login=bazookattv`, {
+            headers: {
+                'Client-ID': process.env.TWITCH_CLIENT_ID,
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        data = await res.json();
+    } catch (err) {
+        console.error('Failed to check stream status:', err.message);
+        return;
+    }
+
+    if (!res.ok || !data.data) {
+        console.error('Failed to check stream status:', data);
+        return;
+    }
+
     const isLive = data.data.length > 0;
 
     if (isLive && !wasLive) {
         console.log('Channel just went live!');
 
-        client.say(channel, "o7 Ready to do work o7");
+        global.client.say(channelsArray[0], "o7 Ready to do work o7");
     }
     else {
         console.log('Channel not live.');

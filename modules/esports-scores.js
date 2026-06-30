@@ -109,15 +109,15 @@ async function pollGame(game, isSlowGame) {
         }
 
         if (isSlowGame) {
-            if (current.status === "running") {
+            if (isTrackedTeam(current) && current.status === "running") {
                 const lastPost = lastSlowChatPost[current.id] || 0;
                 if (now - lastPost >= SLOW_CHAT_INTERVAL) {
-                    global.client.say(CHANNEL, `[${gameLabel(game)} UPDATE] ${current.teamA} ${current.scoreA} - ${current.scoreB} ${current.teamB}`);
+                    global.client.say(CHANNEL, `[${gameLabel(game)}] ${current.teamA} ${current.scoreA} - ${current.scoreB} ${current.teamB}`);
                     lastSlowChatPost[current.id] = now;
                 }
             }
         } else {
-            if (hasScoreOrStatusChanged(prev, current)) {
+            if (isTrackedTeam(current) && hasScoreOrStatusChanged(prev, current)) {
                 global.client.say(CHANNEL, formatScore(current));
             }
         }
